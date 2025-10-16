@@ -92,7 +92,7 @@ namespace Spynorsk
         }
         private static readonly Dictionary<string, string> CustomTranslations = new Dictionary<string, string>
         {
-            { "menu_startgame", "Start spel" },
+            {"menu_startgame", "Start spel"},
             {"language_spynorsk", "Nynorsk"},{"caption_absorbingproj", "oppsugande skot"},
             {"caption_agreeing", "enig"},
             {"caption_alerted", "åtvara"},
