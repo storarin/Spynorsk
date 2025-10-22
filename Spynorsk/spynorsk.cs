@@ -672,7 +672,7 @@ namespace Spynorsk
             {"hud_nothingtobuild", "Ikkje noko å byggje"},
             {"hud_off", "Av"},
             {"hud_on", "På"},
-            {"hud_pet", "Klappe"},
+            {"hud_pet", "Klapp"},
             {"hud_pin_hildir1", "Ulmande Gravkammer"},
             {"hud_pin_hildir2", "Ulande Hòle"},
             {"hud_pin_hildir3", "Forsegla Tårn"},
@@ -704,7 +704,7 @@ namespace Spynorsk
             {"hud_snappoint_top", "Topp"},
             {"hud_switchcategory", "Byt kategori"},
             {"hud_switchitem", "Byt gjenstand"},
-            {"hud_tame", "Tem"},
+            {"hud_tame", "Tam"},
             {"hud_tamecheck", "Sjekk"},
             {"hud_tamedone", "er temt"},
             {"hud_tamefollow", "fylgjer deg"},
@@ -1001,7 +1001,8 @@ namespace Spynorsk
             {"item_bug_meat_cooked", "Steikt Dronekjøt"},
             {"item_bug_meat_cooked_description", "Saftig kvitt kjøt. Nesten utan like."},
             {"item_bug_meat_description", "Når du kjem deg gjennom skalet, finn du møyrt og saftig kjøt inni."},
-            {"item_candlewick", "Veik"}
+            {"item_candlewick", "Veik"},
+            {"item_candlewick_description", "Når du støypar desse inn i voks, får du eit koseleg ljos som brenn lenge."},
         };
 
         // Patch Translate to inject custom translations
