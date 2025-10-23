@@ -59,22 +59,23 @@ namespace Spynorsk
            =:.::--:-::..:::::::::::..:..:::::----::.::-:-:---:-----==-=
 ");
 
+            Localization instance = Localization.instance;
+
+            // Cache translations for fallback
+            var transField = typeof(Localization).GetField("m_translations", BindingFlags.NonPublic | BindingFlags.Instance);
+            instance.SetLanguage(fallbackLang);
+            FallbackTranslations = new Dictionary<string, string>((Dictionary<string, string>)transField.GetValue(instance));
+
             Assembly assembly = Assembly.GetExecutingAssembly();
             HarmonyInstance.PatchAll(assembly);
 
-            // Add your language to the cycle/dropdown
-            Localization instance = Localization.instance;
+            // Add custom language to the list of languages
             FieldInfo langsField = typeof(Localization).GetField("m_languages", BindingFlags.NonPublic | BindingFlags.Instance);
             List<string> langsList = (List<string>)langsField.GetValue(instance);
             if (!langsList.Contains(customLang))
             {
                 langsList.Add(customLang);
             }
-
-            // Cache Bokmål translations for fallback
-            var transField = typeof(Localization).GetField("m_translations", BindingFlags.NonPublic | BindingFlags.Instance);
-            instance.SetLanguage(fallbackLang);
-            FallbackTranslations = new Dictionary<string, string>((Dictionary<string, string>)transField.GetValue(instance));
 
             instance.SetLanguage(customLang);
         }
@@ -83,38 +84,28 @@ namespace Spynorsk
         public static class Localization_SetupLanguage_Patch
         {
             [HarmonyPrefix]
-            public static bool Prefix(Localization __instance, string language)
+            public static bool Prefix(Localization __instance, string language, ref bool __result)
             {
                 if (language != customLang) return true;
 
                 // Access the internal dictionary
                 var transField = typeof(Localization).GetField("m_translations", BindingFlags.NonPublic | BindingFlags.Instance);
                 var translations = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(langFile));
+                int count = translations.Count;
 
-                var merge = FallbackTranslations;
-                foreach (var kvp in translations)
+                foreach (var kvp in FallbackTranslations)
                 {
-                    merge[kvp.Key] = kvp.Value;
+                    if (!translations.ContainsKey(kvp.Key))
+                    {
+                        translations[kvp.Key] = kvp.Value;
+                    }
                 }
 
                 // Reassign updated dictionary
-                transField.SetValue(__instance, merge);
-                Main.logger.LogInfo($"Language {customLang} loaded with {translations.Count} translations.");
-
+                transField.SetValue(__instance, translations);
+                Main.logger.LogInfo($"Language {customLang} loaded with {count} translations.");
+                __result = true;
                 return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(Localization), "GetLanguages")]
-        public static class GetLanguagesPatch
-        {
-            [HarmonyPostfix]
-            private static void Postfix(ref List<string> __result)
-            {
-                if (!__result.Contains(customLang))
-                {
-                    __result.Add(customLang);
-                }
             }
         }
 
