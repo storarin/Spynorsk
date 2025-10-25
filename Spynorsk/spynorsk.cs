@@ -138,7 +138,7 @@ namespace Spynorsk
 
                 // Reassign updated dictionary
                 transField.SetValue(__instance, translations);
-                Main.logger.LogInfo($"Language '{language}' loaded with {custom.Translations.Count} translations{(!string.IsNullOrEmpty(custom.Fallback) ? $" and '{custom.Fallback}' as fallback" : "")}.");
+                Main.logger.LogInfo($"Loaded language '{language}' with {custom.Translations.Count} translations{(!string.IsNullOrEmpty(custom.Fallback) ? $" and '{custom.Fallback}' as fallback" : "")}.");
 
                 __result = true;
                 return false;
