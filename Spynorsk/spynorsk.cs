@@ -16,10 +16,7 @@ namespace Spynorsk
         const string pluginVersion = "1.0.0";
 
         private readonly Harmony HarmonyInstance = new Harmony(pluginGUID);
-
         public static ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(pluginName);
-
-        private static Dictionary<string, string> FallbackTranslations;
 
         const string customLang = "Spynorsk";
         const string fallbackLang = "Norwegian";
@@ -59,15 +56,10 @@ namespace Spynorsk
            =:.::--:-::..:::::::::::..:..:::::----::.::-:-:---:-----==-=
 ");
 
-            Localization instance = Localization.instance;
-
-            // Cache translations for fallback
-            var transField = typeof(Localization).GetField("m_translations", BindingFlags.NonPublic | BindingFlags.Instance);
-            instance.SetLanguage(fallbackLang);
-            FallbackTranslations = new Dictionary<string, string>((Dictionary<string, string>)transField.GetValue(instance));
-
             Assembly assembly = Assembly.GetExecutingAssembly();
             HarmonyInstance.PatchAll(assembly);
+
+            Localization instance = Localization.instance;
 
             // Add custom language to the list of languages
             FieldInfo langsField = typeof(Localization).GetField("m_languages", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -88,12 +80,19 @@ namespace Spynorsk
             {
                 if (language != customLang) return true;
 
-                // Access the internal dictionary
+                // Access private field m_translations
                 var transField = typeof(Localization).GetField("m_translations", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                // Load fallback translations
+                __instance.SetupLanguage(fallbackLang);
+                var fallbackTranslations = new Dictionary<string, string>((Dictionary<string, string>)transField.GetValue(__instance));
+
+                // Load custom translations
                 var translations = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(langFile));
                 int count = translations.Count;
 
-                foreach (var kvp in FallbackTranslations)
+                // Merge with fallback translations
+                foreach (var kvp in fallbackTranslations)
                 {
                     if (!translations.ContainsKey(kvp.Key))
                     {
