@@ -6,4 +6,5 @@ Sjølve modden er laga med mykje hjelp frå ChatGPT, men han bør verke.
 ## Installering 
 Installér [BepInEx](https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/)  
 Installér [JsonDotNET](https://thunderstore.io/c/valheim/p/ValheimModding/JsonDotNET/)  
-Last ned siste utgåve av modden frå releases, og legg han i plugins-mappa. 
+Last ned siste utgåve av modden frå releases.  
+Pakk ut fila og kopiér innhaldet over i plugins-mappa di.
