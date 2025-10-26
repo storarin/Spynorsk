@@ -31,7 +31,33 @@ namespace Spynorsk
 
         public void Awake()
         {
-            Main.logger.LogInfo(@"
+            if (!Directory.Exists(langDir))
+            {
+                Directory.CreateDirectory(langDir);
+                logger.LogWarning($"Lang directory not found. Created new directory at: {langDir}");
+            }
+
+            // Load all language files
+            foreach (string file in Directory.GetFiles(langDir, "*.json"))
+            {
+                try
+                {
+                    string json = File.ReadAllText(file);
+                    Language lang = JsonConvert.DeserializeObject<Language>(json);
+                    if (string.IsNullOrEmpty(lang.Name))
+                    {
+                        logger.LogWarning($"Skipped file '{Path.GetFileName(file)}' (missing Name).");
+                        continue;
+                    }
+
+                    if (lang.Translations == null)
+                        lang.Translations = new Dictionary<string, string>();
+
+                    customLangs[lang.Name] = lang;
+                    logger.LogInfo($"Loaded language definition: '{lang.Name}'");
+                    if (lang.Name.ToLower() == "spynorsk" || lang.Name.ToLower() == "nynorsk")
+                    {
+                        Main.logger.LogInfo(@"
                               --*#**+********+++
                           //******#*#*******+*++*++
                         //*#*****#***************+***
@@ -62,31 +88,7 @@ namespace Spynorsk
               :.:::::::::::::::::::...:\:::-::---:-:::---:---:------=
            =:.::--:-::..:::::::::::..:..:::::----::.::-:-:---:-----==-=
 ");
-
-            if (!Directory.Exists(langDir))
-            {
-                Directory.CreateDirectory(langDir);
-                logger.LogWarning($"Lang directory not found. Created new directory at: {langDir}");
-            }
-
-            // Load all language files
-            foreach (string file in Directory.GetFiles(langDir, "*.json"))
-            {
-                try
-                {
-                    string json = File.ReadAllText(file);
-                    Language lang = JsonConvert.DeserializeObject<Language>(json);
-                    if (string.IsNullOrEmpty(lang.Name))
-                    {
-                        logger.LogWarning($"Skipped file '{Path.GetFileName(file)}' (missing Name).");
-                        continue;
                     }
-
-                    if (lang.Translations == null)
-                        lang.Translations = new Dictionary<string, string>();
-
-                    customLangs[lang.Name] = lang;
-                    logger.LogInfo($"Loaded language definition: '{lang.Name}'");
                 }
                 catch (Exception ex)
                 {
